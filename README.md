@@ -58,4 +58,4 @@ Pipeline steps
 
    This expects to be run as slurm array jobs where the number passed into the array corresponds to the line in the samples.info file
 
-Jason Stajich
+[Jason Stajich](https://github.com/hyphaltip), [Lab Page](http://lab.ucr.edu), [Zygolife](http://zygolife.org)
