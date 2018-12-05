@@ -1,6 +1,26 @@
 #!/bin/bash
 #SBATCH --nodes 1 --ntasks 8 --mem 96gb -J RstolAsmAAFTF --out logs/asm_AAFTF.%a.log -p intel --time 48:00:00
 
+# This script runs genome assembly for the Rhizopus stolonifer project
+# It uses AAFTF https://github.com/stajichlab/AAFTF
+# which relies on other software like spades and pilon
+# The steps are intended to be run all at one time but it can restart if a process has failed
+# or run out of runtime (rmdup and pilon can be very slow if a very fragmented assembly)
+# The steps are to:
+# - run the assembly
+# - remove vector sequence and split contigs if necessary
+# - remove contamination using sourmash to quickly screen for known bacteria signatures
+#   this screens at the Phylum level so for this project we set it to Mucoromycota and if 
+#   any contigs have strong matches outside this phylum they are remove as well as
+#   very low coverage contigs
+# - remove duplicate contigs by searching all vs all of contigs < N50
+# - run pilon to polish the assembly
+# - sort and rename contigs largest to smallest
+# currntly min contig size is 1000 bp but 500 bp can work okay too
+
+# This expects to be run as slurm array jobs where the number passed into the array corresponds
+# to the line in the samples.info file
+
 hostname
 MEM=96
 CPU=$SLURM_CPUS_ON_NODE

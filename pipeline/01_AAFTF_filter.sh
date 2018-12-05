@@ -1,6 +1,14 @@
 #!/bin/bash
 #SBATCH --nodes 1 --ntasks 16 --mem 96gb -J filterAAFTF --out logs/AAFTF_filter.%a.log -p batch --time 8:00:00
 
+# This script run AAFTF steps for filtering contaminants, quality trimming reads and preparing dataset for assembly
+# Because in some projects we have had a lot of Bacteria contamination and the number of possible reference bacteria genomes
+# we use to screen the reads ends up requiring a lot of memory by BBTools bbduk - I have separated this step
+# and allow it to use alot of memory
+
+# This expects to be run as slurm array jobs where the number passed into the array corresponds
+# to the line in the samples.info file
+
 hostname
 MEM=96
 CPU=$SLURM_CPUS_ON_NODE

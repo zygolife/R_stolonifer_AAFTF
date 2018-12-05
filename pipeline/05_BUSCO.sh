@@ -1,6 +1,8 @@
 #!/usr/bin/bash
 #SBATCH --nodes 1 --ntasks 8 --mem 16G --time 24:00:00 --out logs/busco.%a.log -J busco
-
+# This generates summary BUSCO for the genome assemblies
+# # This expects to be run as slurm array jobs where the number passed into the array corresponds
+# to the line in the samples.info file
 module load busco
 
 # for augustus training

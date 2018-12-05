@@ -1,5 +1,10 @@
 #!/bin/bash
 #SBATCH -p batch --time 2-0:00:00 --ntasks 8 --nodes 1 --mem 8G --out logs/mask.%a.log
+# This script runs Funannotate mask step
+# Because this a project focused on population genomics we are assuming the repeat library
+# generated for one R.stolonifer is suitable for all to save time this is used
+# This expects to be run as slurm array jobs where the number passed into the array corresponds
+# to the line in the samples.info file
 
 CPU=1
 if [ $SLURM_CPUS_ON_NODE ]; then

@@ -1,5 +1,15 @@
 #!/bin/bash
 #SBATCH -p batch --time 2-0:00:00 --ntasks 8 --nodes 1 --mem 24G --out logs/predict.%a.log
+
+# This script runs funannotate predict steps - if you need specialized runs with raw RNAseq you will need to tweak
+# but this is a good quick annotation run
+# the slowest aspect is currently the protein to gene model spliced alignments which is a function of
+# the size of the informant.aa file. Smaller file of just swissprot plus one or two proteomes of close species
+# probably would be smarter but I am running a large set of Rhizopus proteins and it is perhaps overkill
+# in general these runs take ~12 hrs per genome and 90% of that is the protein alignment + spliced alignment runs
+
+# This expects to be run as slurm array jobs where the number passed into the array corresponds
+# to the line in the samples.info file
 module unload python
 module unload perl
 module unload perl
