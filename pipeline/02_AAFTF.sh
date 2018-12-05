@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH --nodes 1 --ntasks 8 --mem 96gb -J zygoAsmAAFTF --out logs/AAFTF2_asm.%a.%A.log -p intel --time 48:00:00
+#SBATCH --nodes 1 --ntasks 8 --mem 96gb -J RstolAsmAAFTF --out logs/asm_AAFTF.%a.log -p intel --time 48:00:00
 
 hostname
 MEM=96
@@ -14,7 +14,7 @@ if [ ! $N ]; then
     fi
 fi
 
-module load AAFTF/git-live.noworkdir
+module load AAFTF
 
 FASTQDIR=input
 SAMPLEFILE=samples.info
@@ -27,7 +27,7 @@ mkdir -p $ASM
 if [ -z $CPU ]; then
     CPU=1
 fi
-
+IFS=,
 sed -n ${N}p $SAMPLEFILE | while read BASE FWD REV
 do
 ASMFILE=$ASM/${BASE}.spades.fasta
@@ -43,12 +43,11 @@ LEFT=$WORKDIR/${BASE}_filtered_1.fastq.gz
 RIGHT=$WORKDIR/${BASE}_filtered_2.fastq.gz
 
 mkdir -p $WORKDIR
-
+mkdir -p /scratch/$USER
 echo "$BASE"
 if [ ! -f $ASMFILE ]; then    
     if [ ! -f $LEFT ]; then
-	echo "Cannot find LEFT $LEFT or RIGHT $RIGHT - did you run"
-	echo "$OUTDIR/${BASE}_R1.fq.gz $OUTDIR/${BASE}_R2.fq.gz"
+	echo "Cannot find LEFT $LEFT or RIGHT $RIGHT - did you run 01_AAFTF_filter.sh"
 	exit
     fi
     AAFTF assemble -c $CPU --left $LEFT --right $RIGHT  \
@@ -71,7 +70,7 @@ if [ ! -f $PURGE ]; then
 fi
 
 if [ ! -f $CLEANDUP ]; then
-   AAFTF rmdup -i $PURGE -o $CLEANDUP -c $CPU -m 500
+   AAFTF rmdup -i $PURGE -o $CLEANDUP -c $CPU -m 1000
 fi
 
 if [ ! -f $PILON ]; then

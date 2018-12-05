@@ -14,7 +14,7 @@ if [ ! $N ]; then
     fi
 fi
 
-module load AAFTF/git-live.noworkdir
+module load AAFTF
 FASTQDIR=input
 SAMPLEFILE=samples.info
 PHYLUM=Mucoromycota
@@ -47,12 +47,12 @@ mkdir -p $WORKDIR
 echo "$BASE"
 if [ ! -f $ASMFILE ]; then    
     if [ ! -f $LEFT ]; then
-	echo "$FASTQDIR/${BASE}_R1.fq.gz $FASTQDIR/${BASE}_R2.fq.gz"
+	echo "$FASTQDIR/$FWD $FASTQDIR/$REV for $BASE"
 	if [ ! -f $LEFTTRIM ]; then
-	    AAFTF trim --method bbduk --memory $MEM --left $FASTQDIR/$FWD --right $FASTQDIR/$REV -c $CPU -o $WORKDIR/${BASE}
+	    AAFTF trim --method bbduk --memory $MEM --left $FASTQDIR/$FWD --right $FASTQDIR/$REV -c $CPU -o $WORKDIR/${BASE} -ml 50
 	fi
 	echo "$LEFTTRIM $RIGHTTRIM"
-	AAFTF filter -c $CPU --memory $MEM -o $WORKDIR/${BASE} --left $LEFTTRIM --right $RIGHTTRIM --aligner bbduk -a NC_010943.1 CP014274.1 CP017483.1 CP011305.1 CP022053.1 CP007638.1 CP023269.1 NC_000964.3 NC_004461.1
+	AAFTF filter -c $CPU --memory $MEM -o $WORKDIR/${BASE} --left $LEFTTRIM --right $RIGHTTRIM --aligner bbduk -a NC_010943.1 CP014274.1 CP017483.1 CP011305.1 CP022053.1 CP007638.1 CP023269.1 NC_000964.3 NC_004461.1 NC_000964.3 NZ_LN831029.1 NZ_CP021111.1 NZ_LT907988.1
 	#
 	echo "$LEFT $RIGHT"
 	unlink $LEFTTRIM
