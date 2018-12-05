@@ -3,10 +3,13 @@
 DIR=genomes
 IFS=,
 N=1
-while read BASE FWD REV
+m=$(cat samples.info | while read BASE FWD REV
 do
 	if [ ! -f $DIR/${BASE}.sorted.fasta ]; then
-		echo "Missing asm $BASE ($N)"
+		sleep 0
+#		echo "Missing asm $BASE ($N)" 1>&2
+#		echo -n "$N,"
 	fi
 	N=$(expr $N + 1)
-done < samples.info
+done)
+echo $m
