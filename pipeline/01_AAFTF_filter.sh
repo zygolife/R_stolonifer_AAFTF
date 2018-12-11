@@ -1,6 +1,5 @@
 #!/bin/bash
-#SBATCH --nodes 1 --ntasks 16 --mem 96gb -J filterAAFTF --out logs/AAFTF_filter.%a.log -p batch --time 8:00:00
-
+#SBATCH --nodes 1 --ntasks 16 --mem 256gb -J filterAAFTF --out logs/AAFTF_filter.%a.log -p highmem --time 8:00:00
 # This script run AAFTF steps for filtering contaminants, quality trimming reads and preparing dataset for assembly
 # Because in some projects we have had a lot of Bacteria contamination and the number of possible reference bacteria genomes
 # we use to screen the reads ends up requiring a lot of memory by BBTools bbduk - I have separated this step
@@ -10,7 +9,7 @@
 # to the line in the samples.info file
 
 hostname
-MEM=96
+MEM=256
 CPU=$SLURM_CPUS_ON_NODE
 N=${SLURM_ARRAY_TASK_ID}
 
@@ -62,9 +61,13 @@ if [ ! -f $ASMFILE ]; then
 	echo "$LEFTTRIM $RIGHTTRIM"
 	AAFTF filter -c $CPU --memory $MEM -o $WORKDIR/${BASE} --left $LEFTTRIM --right $RIGHTTRIM --aligner bbduk -a NC_010943.1 CP014274.1 CP017483.1 CP011305.1 CP022053.1 CP007638.1 CP023269.1 NC_000964.3 NC_004461.1 NC_000964.3 NZ_LN831029.1 NZ_CP021111.1 NZ_LT907988.1
 	#
-	echo "$LEFT $RIGHT"
-	unlink $LEFTTRIM
-	unlink $RIGHTTRIM
+	if [ -f $LEFT ]; then
+		echo "$LEFT $RIGHT"
+		unlink $LEFTTRIM
+		unlink $RIGHTTRIM
+	else 
+		echo "AAFTF filter failed, likely out of memory as the kmer lookup file is big for bbduk"
+	fi
     fi
 fi
 done

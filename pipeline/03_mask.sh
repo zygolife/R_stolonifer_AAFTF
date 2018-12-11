@@ -28,12 +28,6 @@ if [ ! $N ]; then
         exit
     fi
 fi
-MAX=$(wc -l $SAMPLEFILE | awk '{print $1}')
-if [ $N -gt $(expr $MAX - 1) ]; then
-    MAXSMALL=$(expr $MAX - 1)
-    echo "$N is too big, only $MAXSMALL lines in $SAMPLEFILE" 
-    exit
-fi
 
 IFS=,
 sed -n ${N}p $SAMPLEFILE | while read BASE FWD REV
