@@ -8,7 +8,7 @@ do
 	if [[ ! -f $DIR/${BASE}.sorted.fasta ]]; then
 		echo "skipping $BASE it is missing an assembly" 1>2 
 	elif [ ! -f $DIR/${BASE}.masked.fasta ]; then
-		echo "Missing asm $BASE ($N)" 1>2
+		echo "Missing masked $BASE ($N)" 1>2
 		echo $N
 	fi
 	N=$(expr $N + 1)
